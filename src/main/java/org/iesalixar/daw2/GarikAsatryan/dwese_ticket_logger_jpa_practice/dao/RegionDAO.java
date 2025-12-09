@@ -1,0 +1,23 @@
+package org.iesalixar.daw2.GarikAsatryan.dwese_ticket_logger_jpa_practice.dao;
+
+
+import org.iesalixar.daw2.GarikAsatryan.dwese_ticket_logger_jpa_practice.entities.Region;
+
+import java.sql.SQLException;
+import java.util.List;
+
+public interface RegionDAO {
+    List<Region> listAllRegions() throws SQLException;
+
+    void insertRegion(Region region) throws SQLException;
+
+    void updateRegion(Region region) throws SQLException;
+
+    void deleteRegion(Long id) throws SQLException;
+
+    Region getRegionById(Long id) throws SQLException;
+
+    boolean existsRegionByCode(String code) throws SQLException;
+
+    boolean existsRegionByCodeAndNotId(String code, Long id) throws SQLException;
+}

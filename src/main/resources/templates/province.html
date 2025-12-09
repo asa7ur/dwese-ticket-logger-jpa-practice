@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{fragments/head :: head (#{msg.province.head})}">
+    <title>Ticket Logger - Lista de Provincias</title>
+</head>
+<body class="d-flex flex-column min-vh-100 bg-dark text-light">
+
+<header th:replace="~{fragments/header :: header}"></header>
+
+<main class="flex-grow-1 container mt-5">
+
+    <h1 class="mt-3" th:text="#{msg.province.title}">Lista de Provincias</h1>
+
+    <!-- Error Message -->
+    <div th:if="${errorMessage}" class="alert alert-danger">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+    <!-- Success Message -->
+    <div th:if="${successMessage}" class="alert alert-success">
+        <p th:text="${successMessage}"></p>
+    </div>
+
+    <div class="mb-3">
+        <a th:href="@{/provinces/new}" class="btn btn-success" th:text="#{msg.province.add}">
+            Add New Province
+        </a>
+    </div>
+
+    <table class="table table-bordered table-dark table-striped mt-3">
+        <thead>
+        <tr>
+            <th th:text="#{msg.province.code}">Code</th>
+            <th th:text="#{msg.province.name}">Name</th>
+            <th th:text="#{msg.province.region}">Region</th>
+            <th th:text="#{msg.province.actions}">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="province : ${listProvinces}">
+            <td th:text="${province.code}"></td>
+            <td th:text="${province.name}"></td>
+            <td th:text="${province.regionName}">-</td>
+            <td>
+                <!-- Edit button -->
+                <a th:text="#{msg.province.edit}"
+                   th:href="@{/provinces/edit(id=${province.id})}"
+                   class="btn btn-primary btn-sm">
+                    Edit
+                </a>
+                <!-- Delete button -->
+                <form th:action="@{/provinces/delete}" method="post" class="d-inline">
+                    <input type="hidden" name="id" th:value="${province.id}"/>
+                    <button th:text="#{msg.province.delete}"
+                            type="submit"
+                            class="btn btn-danger btn-sm"
+                            th:onclick="|return confirm('#{msg.province.confirm}');|">
+                        Delete
+                    </button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <a href="#" th:href="@{/}" th:text="#{msg.province.returnhome}" class="btn btn-secondary my-3">Volver al inicio</a>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{fragments/head :: head (#{msg.province-form.head})}">
+    <title>Ticket Logger - Insertar/Actualizar Provincia</title>
+</head>
+
+<body class="d-flex flex-column min-vh-100 bg-dark text-light">
+
+<header th:replace="~{fragments/header :: header}"></header>
+
+<main class="flex-grow-1 container mt-5">
+
+    <!-- Dynamic Title -->
+    <h1 class="mt-3" th:text="${province.id == null} ? #{msg.province-form.add} : #{msg.province-form.edit}"></h1>
+
+    <!-- Error Message -->
+    <div th:if="${errorMessage}" class="alert alert-danger">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+    <!-- Success Message -->
+    <div th:if="${successMessage}" class="alert alert-success">
+        <p th:text="${successMessage}"></p>
+    </div>
+
+    <!-- Single Form with dynamic action -->
+    <form th:action="@{${province.id == null ? '/provinces/insert' : '/provinces/update'}}"
+          th:object="${province}" method="post" class="mt-4">
+
+        <!-- ID -->
+        <input type="hidden" th:field="*{id}"/>
+
+        <!-- Code -->
+        <div class="mb-3">
+            <label for="code" class="form-label text-light" th:text="#{msg.province-form.code}">Code:</label>
+            <input type="text"
+                   th:field="*{code}"
+                   id="code"
+                   class="form-control bg-dark text-light border-light"
+                   required/>
+            <div th:if="${#fields.hasErrors('code')}"
+                 class="text-danger"
+                 th:errors="*{code}">
+            </div>
+        </div>
+
+        <!-- Name -->
+        <div class="mb-3">
+            <label for="name" class="form-label text-light" th:text="#{msg.province-form.name}">Name:</label>
+            <input type="text"
+                   th:field="*{name}"
+                   id="name"
+                   class="form-control bg-dark text-light border-light"
+                   required/>
+            <div th:if="${#fields.hasErrors('name')}"
+                 class="text-danger"
+                 th:errors="*{name}">
+            </div>
+        </div>
+
+
+        <!-- Region -->
+        <div class="mb-3">
+            <label for="regionId" class="form-label text-light" th:text="#{msg.province-form.region}">Name:</label>
+            <select th:field="*{regionId}" id="regionId" class="form-select bg-dark text-light border-light" required>
+                <option value="" th:text="#{msg.province-form.select}">-- Selecciona una región --</option>
+                <option th:each="region : ${regions}"
+                        th:value="${region.id}"
+                        th:text="${region.name}">
+                </option>
+            </select>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit"
+                class="btn btn-primary"
+                th:text="${province.id == null} ? #{msg.province-form.create} : #{msg.province-form.update}">
+        </button>
+    </form>
+
+    <!-- Back Button -->
+    <a th:href="@{/provinces}"
+       class="btn btn-secondary mt-3"
+       th:text="#{msg.province-form.returnback}">
+        Back to List
+    </a>
+
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+</body>
+</html>
