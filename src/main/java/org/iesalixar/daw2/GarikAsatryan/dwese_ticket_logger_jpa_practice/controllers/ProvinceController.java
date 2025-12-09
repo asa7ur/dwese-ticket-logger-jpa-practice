@@ -6,12 +6,15 @@ import org.iesalixar.daw2.GarikAsatryan.dwese_ticket_logger_jpa_practice.entitie
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -29,13 +32,36 @@ public class ProvinceController {
     private RegionRepository regionRepository;
 
     @GetMapping
-    public String listProvinces(Model model) {
-        logger.info("Solicitando la lista de todas las provincias...");
-        List<Province> listProvinces = null;
-        listProvinces = provinceRepository.findAll();
-        logger.info("Se han cargado {} provincias.", listProvinces.size());
-        model.addAttribute("listProvinces", listProvinces);
-        return "/province";
+    public String listProvinces(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String sort,
+            Model model) {
+
+        logger.info("Solicitando la lista de provincias... Search: {}, Sort: {}, Page: {}", search, sort, page);
+
+        Pageable pageable = PageRequest.of(page - 1, 5, getSort(sort));
+
+        Page<Province> provinces;
+        int totalPages = 0;
+
+        if (search != null && !search.isBlank()) {
+            provinces = provinceRepository.findByNameContainingIgnoreCase(search, pageable);
+            totalPages = (int) Math.ceil((double) provinceRepository.countByNameContainingIgnoreCase(search) / 5);
+        } else {
+            provinces = provinceRepository.findAll(pageable);
+            totalPages = (int) Math.ceil((double) provinceRepository.count() / 5);
+        }
+
+        logger.info("Se han cargado {} provincias.", provinces.toList().size());
+
+        model.addAttribute("listProvinces", provinces.toList());
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("search", search);
+        model.addAttribute("sort", sort);
+
+        return "province";
     }
 
     @GetMapping("/new")
@@ -92,5 +118,19 @@ public class ProvinceController {
         provinceRepository.deleteById(id);
         logger.info("Provincia con ID {} eliminada con éxito.", id);
         return "redirect:/provinces";
+    }
+
+    private Sort getSort(String sort) {
+        if (sort == null) {
+            return Sort.by("id").ascending();
+        }
+        return switch (sort) {
+            case "nameAsc" -> Sort.by("name").ascending();
+            case "nameDesc" -> Sort.by("name").descending();
+            case "codeAsc" -> Sort.by("code").ascending();
+            case "codeDesc" -> Sort.by("code").descending();
+            case "idDesc" -> Sort.by("id").descending();
+            default -> Sort.by("id").ascending();
+        };
     }
 }

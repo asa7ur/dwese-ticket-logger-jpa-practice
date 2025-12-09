@@ -45,10 +45,14 @@ public class RegionController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(required = false) String search,
             @RequestParam(required = false) String sort, Model model) {
-        logger.info("Solicitando la lista de todas las regiones..." + search);
+
+        logger.info("Solicitando la lista de provincias... Search: {}, Sort: {}, Page: {}", search, sort, page);
+
         Pageable pageable = PageRequest.of(page - 1, 5, getSort(sort));
+
         Page<Region> regions;
         int totalPages = 0;
+
         if (search != null && !search.isBlank()) {
             regions = regionRepository.findByNameContainingIgnoreCase(search, pageable);
             totalPages = (int) Math.ceil((double) regionRepository.countByNameContainingIgnoreCase(search) / 5);
@@ -56,6 +60,7 @@ public class RegionController {
             regions = regionRepository.findAll(pageable);
             totalPages = (int) Math.ceil((double) regionRepository.count() / 5);
         }
+
         logger.info("Se han cargado {} regiones.", regions.toList().size());
         model.addAttribute("listRegions", regions.toList());
         model.addAttribute("totalPages", totalPages);

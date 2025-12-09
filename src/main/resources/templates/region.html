@@ -64,6 +64,33 @@
         </tbody>
     </table>
 
+    <nav th:if="${totalPages > 1}" aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+
+            <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/regions(page=${currentPage - 1}, search=${search}, sort=${sort})}">
+                    &laquo;
+                </a>
+            </li>
+
+            <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}"
+                th:classappend="${currentPage == i} ? 'active'">
+                <a class="page-link"
+                   th:href="@{/regions(page=${i}, search=${search}, sort=${sort})}"
+                   th:text="${i}">
+                </a>
+            </li>
+
+            <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/regions(page=${currentPage + 1}, search=${search}, sort=${sort})}">
+                    &raquo;
+                </a>
+            </li>
+        </ul>
+    </nav>
+
     <a th:href="@{/}" th:text="#{msg.region.returnhome}" class="btn btn-secondary my-3">Back to Home</a>
 
 </main>
