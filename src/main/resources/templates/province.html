@@ -40,7 +40,7 @@
         <tr th:each="province : ${listProvinces}">
             <td th:text="${province.code}"></td>
             <td th:text="${province.name}"></td>
-            <td th:text="${province.regionName}">-</td>
+            <td th:text="${province.region.name}">-</td>
             <td>
                 <!-- Edit button -->
                 <a th:text="#{msg.province.edit}"

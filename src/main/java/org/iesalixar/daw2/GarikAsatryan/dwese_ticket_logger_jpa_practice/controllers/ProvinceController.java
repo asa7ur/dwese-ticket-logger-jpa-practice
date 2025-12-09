@@ -31,10 +31,10 @@ public class ProvinceController {
     @GetMapping
     public String listProvinces(Model model) {
         logger.info("Solicitando la lista de todas las provincias...");
-        List<Province> listProvincias = null;
-        listProvincias = provinceRepository.findAll();
-        logger.info("Se han cargado {} provincias.", listProvincias.size());
-        model.addAttribute("listProvincias", listProvincias);
+        List<Province> listProvinces = null;
+        listProvinces = provinceRepository.findAll();
+        logger.info("Se han cargado {} provincias.", listProvinces.size());
+        model.addAttribute("listProvinces", listProvinces);
         return "/province";
     }
 
@@ -49,9 +49,9 @@ public class ProvinceController {
     @GetMapping("/edit")
     public String showEditForm(@RequestParam("id") Long id, Model model) {
         logger.info("Mostrando formulario de edición para provincia {}", id);
-        Optional<Province> provincia = provinceRepository.findById(id);
-        if (provincia.isPresent()) {
-            model.addAttribute("province", provincia.get());
+        Optional<Province> province = provinceRepository.findById(id);
+        if (province.isPresent()) {
+            model.addAttribute("province", province.get());
             model.addAttribute("listRegiones", regionRepository.findAll());
         } else{
             logger.warn("No se encontró la región con ID {}", id);
@@ -60,34 +60,34 @@ public class ProvinceController {
     }
 
     @PostMapping("/insert")
-    public String insertProvincia(@ModelAttribute("provincia") Province provincia, RedirectAttributes redirectAttributes) {
-        logger.info("Insertando nueva provincia con código {}", provincia.getCode());
-        if (provinceRepository.existsProvinceByCode(provincia.getCode())) {
+    public String insertProvince(@ModelAttribute("province") Province province, RedirectAttributes redirectAttributes) {
+        logger.info("Insertando nueva provincia con código {}", province.getCode());
+        if (provinceRepository.existsProvinceByCode(province.getCode())) {
             logger.warn("El código de la provincia {} ya existe.",
-                    provincia.getCode());
+                    province.getCode());
             redirectAttributes.addFlashAttribute("errorMessage", "El código de la provincia ya existe.");
             return "redirect:/provinces/new";
         }
-        provinceRepository.save(provincia);
-        logger.info("Provincia {} insertada con éxito.", provincia.getCode());
+        provinceRepository.save(province);
+        logger.info("Provincia {} insertada con éxito.", province.getCode());
         return "redirect:/provinces";
     }
 
     @PostMapping("/update")
-    public String updateProvincia(@ModelAttribute("provincia") Province provincia, RedirectAttributes redirectAttributes) {
-        logger.info("Actualizando provincia con ID {}", provincia.getId());
-        if (provinceRepository.existsProvinceByCodeAndIdNot(provincia.getCode(), provincia.getId())) {
-            logger.warn("El código de la provincia {} ya existe para otra provincia.", provincia.getCode());
+    public String updateProvince(@ModelAttribute("province") Province province, RedirectAttributes redirectAttributes) {
+        logger.info("Actualizando provincia con ID {}", province.getId());
+        if (provinceRepository.existsProvinceByCodeAndIdNot(province.getCode(), province.getId())) {
+            logger.warn("El código de la provincia {} ya existe para otra provincia.", province.getCode());
             redirectAttributes.addFlashAttribute("errorMessage", "El código de la provincia ya existe para otra provincia.");
-            return "redirect:/provinces/edit?id=" + provincia.getId();
+            return "redirect:/provinces/edit?id=" + province.getId();
         }
-        provinceRepository.save(provincia);
-        logger.info("Provincia con ID {} actualizada con éxito.", provincia.getId());
+        provinceRepository.save(province);
+        logger.info("Provincia con ID {} actualizada con éxito.", province.getId());
         return "redirect:/provinces";
     }
 
     @PostMapping("/delete")
-    public String deleteProvincia(@RequestParam("id") Long id, RedirectAttributes redirectAttributes) {
+    public String deleteProvince(@RequestParam("id") Long id, RedirectAttributes redirectAttributes) {
         logger.info("Eliminando Provincia con ID {}", id);
         provinceRepository.deleteById(id);
         logger.info("Provincia con ID {} eliminada con éxito.", id);
