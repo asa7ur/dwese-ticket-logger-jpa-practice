@@ -32,6 +32,9 @@ public class Region {
     @OneToMany(mappedBy = "region", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Province> provinces;
 
+    @Column(name = "image")
+    private String image;
+
     public Region(String code, String name) {
         this.code = code;
         this.name = name;

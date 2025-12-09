@@ -2,7 +2,8 @@ CREATE TABLE IF NOT EXISTS regions
 (
     id   INT AUTO_INCREMENT PRIMARY KEY,
     code VARCHAR(10)  NOT NULL UNIQUE,
-    name VARCHAR(100) NOT NULL
+    name VARCHAR(100) NOT NULL,
+    image VARCHAR(100)
 );
 
 CREATE TABLE IF NOT EXISTS provinces
@@ -10,8 +11,6 @@ CREATE TABLE IF NOT EXISTS provinces
     id        INT PRIMARY KEY AUTO_INCREMENT,
     code      VARCHAR(10)  NOT NULL UNIQUE,
     name      VARCHAR(100) NOT NULL,
-    region_id INT          NOT NULL,
-    FOREIGN KEY (region_id) REFERENCES regions (id)
-        ON UPDATE CASCADE
-        ON DELETE CASCADE
+    region_id INT NOT NULL,
+    CONSTRAINT fk_region FOREIGN KEY (region_id) REFERENCES regions(id) ON DELETE CASCADE
 );
